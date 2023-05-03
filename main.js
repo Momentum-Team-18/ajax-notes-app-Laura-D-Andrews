@@ -1,4 +1,7 @@
-let mainContainer = document.querySelector("mainContainer")
+let mainContainer = document.querySelector("#mainContainer")
+let addNoteBox = document.querySelector("#add-note-box")
+let newNoteTitle = document.querySelector("#new-note-title")
+let addButton = document.querySelector("#add-button")
 
 let getUrl = "http://localhost:3000/notes/"
 
@@ -11,35 +14,44 @@ fetch(getUrl, {
     return response.json()
 })
 .then((parsedResponse) => {
-    return parsedResponse
-})
+  console.log(parsedResponse)
+    for (let data of parsedResponse) {
+      console.log(data.title)
+    let noteCard = document.createElement('div')
+    mainContainer.appendChild(noteCard)
 
-fetch('http://localhost:3000/notes/', {
-  method: 'POST', 
-  headers: {"Content-Type": "application/json"}, 
-  body: JSON.stringify({"id": 2, "title": "Hi", "body": "COOL"})
-})
-.then(r => r.json())
-.then((hiResponse) => {
-    return hiResponse
-})
+    let noteTitle = document.createElement('h1')
+    noteTitle.innerText = data.title
+    noteCard.appendChild(noteTitle)
 
-fetch('http://localhost:3000/notes/', {
-  method: 'POST', 
-  headers: {"Content-Type": "application/json"}, 
-  body: JSON.stringify({"id": 3, "title": "Good Morning", "body": "YAY!"})
-})
-.then(r => r.json())
-.then((morningResponse) => {
-    return morningResponse
-})
+    let noteBody = document.createElement('p')
+    noteBody.innerText = data.body 
+    noteCard.appendChild(noteBody)
+    }
 
-fetch('http://localhost:3000/notes/', {
-  method: 'POST', 
-  headers: {"Content-Type": "application/json"}, 
-  body: JSON.stringify({"id": 4, "title": "ToDo", "body": "nothing"})
-})
-.then(r => r.json())
-.then((toDoResponse) => {
-    return toDoResponse   
-})
+    addButton.addEventListener("click", (event) => {
+      event.preventDefault()
+      console.log(event.target.innerText)
+      let postUrl = 'http://localhost:3000/notes/'
+      fetch(postUrl, {
+        method: 'POST', 
+        headers: {"Content-Type": "application/json"}, 
+        body: JSON.stringify({"title": "Good evening", "body": "have a good day"})
+      })
+      .then(r => r.json())
+      .then((information) => {
+        console.log(information)
+        let noteCard = document.createElement('div')
+        mainContainer.appendChild(noteCard)
+    
+        let noteTitle = document.createElement('h1')
+        noteTitle.innerText = information.title
+        noteCard.appendChild(noteTitle)
+    
+        let noteBody = document.createElement('p')
+        noteBody.innerText = information.body 
+        noteCard.appendChild(noteBody)
+        })
+      })
+    })
+    
