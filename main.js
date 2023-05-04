@@ -1,57 +1,81 @@
-let mainContainer = document.querySelector("#mainContainer")
-let addNoteBox = document.querySelector("#add-note-box")
-let newNoteTitle = document.querySelector("#new-note-title")
-let addButton = document.querySelector("#add-button")
+let mainContainer = document.querySelector("#mainContainer");
+let addNoteBox = document.querySelector("#add-note-box");
+let newNoteTitle = document.querySelector("#new-note-title");
+let newNoteBody = document.querySelector("#new-note-body");
+let addButton = document.querySelector("#add-button");
+let deleteNote = document.querySelector("#delete-note");
+let deleteButton = document.querySelector("#delete-button");
 
-let getUrl = "http://localhost:3000/notes/"
+let getUrl = "http://localhost:3000/notes/";
 
 fetch(getUrl, {
-    method: "GET",
-    headers: { "Content-Type": "application.json" },
+  method: "GET",
+  headers: { "Content-Type": "application.json" },
 })
+  .then(function (response) {
+    return response.json();
+  })
+  .then((parsedResponse) => {
+    let myArray = parsedResponse;
+    console.log(myArray);
 
-.then(function (response) {
-    return response.json()
-})
-.then((parsedResponse) => {
-  console.log(parsedResponse)
     for (let data of parsedResponse) {
-      console.log(data.title)
-    let noteCard = document.createElement('div')
-    mainContainer.appendChild(noteCard)
+      let noteCard = document.createElement("div");
+      mainContainer.appendChild(noteCard);
+      noteCard.classList.add("noteCard");
 
-    let noteTitle = document.createElement('h1')
-    noteTitle.innerText = data.title
-    noteCard.appendChild(noteTitle)
+      let noteId = document.createElement("h5");
+      noteId.innerText = data.id;
+      noteCard.appendChild(noteId);
 
-    let noteBody = document.createElement('p')
-    noteBody.innerText = data.body 
-    noteCard.appendChild(noteBody)
+      let noteTitle = document.createElement("p");
+      noteTitle.innerText = data.title;
+      noteCard.appendChild(noteTitle);
+
+      let noteBody = document.createElement("textarea");
+      noteBody.innerText = data.body;
+      noteCard.appendChild(noteBody);
+      noteBody.classList.add("noteBody");
     }
 
     addButton.addEventListener("click", (event) => {
-      event.preventDefault()
-      console.log(event.target.innerText)
-      let postUrl = 'http://localhost:3000/notes/'
+      let postUrl = "http://localhost:3000/notes/";
       fetch(postUrl, {
-        method: 'POST', 
-        headers: {"Content-Type": "application/json"}, 
-        body: JSON.stringify({"title": "Good evening", "body": "have a good day"})
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: `${newNoteTitle.value}`,
+          body: "what's on your mind?",
+        }),
       })
-      .then(r => r.json())
-      .then((information) => {
-        console.log(information)
-        let noteCard = document.createElement('div')
-        mainContainer.appendChild(noteCard)
-    
-        let noteTitle = document.createElement('h1')
-        noteTitle.innerText = information.title
-        noteCard.appendChild(noteTitle)
-    
-        let noteBody = document.createElement('p')
-        noteBody.innerText = information.body 
-        noteCard.appendChild(noteBody)
-        })
+        .then((r) => r.json())
+        .then((information) => {
+          let noteCard = document.createElement("div");
+          mainContainer.appendChild(noteCard);
+
+          let noteTitle = document.createElement("h1");
+          noteTitle.innerText = information.title;
+          noteCard.appendChild(noteTitle);
+
+          let noteBody = document.createElement("textarea");
+          noteBody.innerText = information.body;
+          noteCard.appendChild(noteBody);
+          noteBody.classList.add("noteBody");
+        });
+    });
+
+    deleteButton.addEventListener("click", (event) => {
+      event.preventDefault()
+      let userDeleteNumber = deleteNote.value
+      console.log(userDeleteNumber)
+      let deleteUrl = `http://localhost:3000/notes/${userDeleteNumber}`;
+      fetch(deleteUrl, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
       })
+   .then((r) => r.json())
+   
+    .then((deleteInfo) => {
     })
-    
+   })
+  })
