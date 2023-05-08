@@ -4,7 +4,9 @@ let newNoteTitle = document.querySelector("#new-note-title");
 let newNoteBody = document.querySelector("#new-note-body");
 let addButton = document.querySelector("#add-button");
 let deleteNote = document.querySelector("#delete-note");
-let deleteButton = document.querySelector("#delete-button");
+let deleteButton = document.querySelector("#delete-button")
+let editNote = document.querySelector("#edit-note")
+let editButton = document.querySelector("#edit-button")
 
 let getUrl = "http://localhost:3000/notes/";
 
@@ -78,4 +80,26 @@ fetch(getUrl, {
     .then((deleteInfo) => {
     })
    })
+
+   editButton.addEventListener("click", (event) => {
+    event.preventDefault()
+    let userEditNumber = editNote.value
+    console.log(userEditNumber)
+    // document.getElementById("#new-note-title").appendChild(editNote)
+    let editUrl = `http://localhost:3000/notes/${userEditNumber}`
+    fetch(editUrl,  {
+      method: "PATCH", 
+      headers: { "Content-Type": "application/json" },
+      // body: JSON.stringify({
+      //   title: `${newNoteTitle.value}`,
+    })
+    .then((r) => r.json())
+
+    .then((editInfo) => {
+      console.log(editInfo)
+let editNoteTitle = editInfo.title
+console.log(editNoteTitle)
+    })
+   })
   })
+// })
